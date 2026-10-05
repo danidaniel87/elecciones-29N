@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elecciones 29N: propuestas partido a partido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --ink:#14213d; --muted:#56627a; --line:#d5dbe3;
+  --mark:#f2c230; --mark-ink:#3a2c00; --soft:#e3e8ee;
+  --v-baja:#1f7a4d; --v-media:#8a6a00; --v-alta:#b4541a; --v-muyalta:#a32222; --v-inviable:#5b1d6e;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1626; --surface:#18223a; --ink:#edf1f7; --muted:#a3aec2; --line:#2c3854;
+    --mark:#f2c230; --mark-ink:#2b2100; --soft:#222e4a;
+    --v-baja:#5fd39a; --v-media:#f0cf5a; --v-alta:#f59a5c; --v-muyalta:#ff8585; --v-inviable:#d59bea;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1626; --surface:#18223a; --ink:#edf1f7; --muted:#a3aec2; --line:#2c3854;
+  --mark:#f2c230; --mark-ink:#2b2100; --soft:#222e4a;
+  --v-baja:#5fd39a; --v-media:#f0cf5a; --v-alta:#f59a5c; --v-muyalta:#ff8585; --v-inviable:#d59bea;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+
+/* Cabecera */
+header.top{padding:36px 0 8px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,3.6rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 14px;max-width:16ch}
+.lede{max-width:62ch;color:var(--muted);margin:0 0 18px}
+.count{display:inline-block;background:var(--mark);color:var(--mark-ink);font-weight:600;padding:4px 10px;border-radius:4px}
+.warn{border-left:4px solid var(--mark);background:var(--surface);padding:14px 18px;border-radius:0 8px 8px 0;max-width:80ch;font-size:.95rem}
+.warn ul{margin:8px 0 0;padding-left:18px}
+.warn li{margin:4px 0}
+
+/* Barra de escaños */
+.seats{margin:28px 0 8px}
+.seats-head{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.seats-head h2{font-family:var(--display);font-size:1.25rem;margin:0}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.toggle button{border:0;background:none;padding:6px 14px;font-size:.9rem}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.bar-wrap{position:relative;padding-top:22px}
+.bar{display:flex;height:46px;border-radius:8px;overflow:hidden;background:var(--soft)}
+.bar button{border:0;padding:0;min-width:3px;height:100%;transition:flex-grow .35s ease,opacity .2s}
+.bar button.dim{opacity:.35}
+.bar button:hover{opacity:1}
+.maj{position:absolute;top:0;bottom:-4px;left:50.2857%;border-left:2px dashed var(--ink)}
+.maj span{position:absolute;top:0;left:6px;font-size:.78rem;white-space:nowrap;color:var(--muted)}
+.bar-note{font-size:.85rem;color:var(--muted);margin:8px 0 0}
+
+/* Pestañas */
+nav.tabs{display:flex;gap:4px;margin:30px 0 0;border-bottom:2px solid var(--ink);overflow-x:auto}
+nav.tabs button{border:0;background:none;padding:10px 16px;font-family:var(--display);font-weight:500;font-size:1.02rem;white-space:nowrap;border-radius:8px 8px 0 0}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0}
+.search{flex:1 1 240px;max-width:380px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Vista partidos */
+.split{display:grid;grid-template-columns:250px 1fr;gap:24px;align-items:start}
+.plist{display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.plist button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px}
+.plist button[aria-current="true"]{background:var(--surface);box-shadow:inset 3px 0 0 var(--pc)}
+.dot{width:12px;height:12px;border-radius:3px;background:var(--pc);flex:none}
+.plist small{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+.sheet{background:var(--surface);border-radius:12px;padding:24px;border-top:6px solid var(--pc)}
+.sheet h2{font-family:var(--display);font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.1;margin:0 0 4px}
+.facts{display:flex;flex-wrap:wrap;gap:6px 22px;color:var(--muted);font-size:.93rem;margin:6px 0 10px}
+.facts b{color:var(--ink);font-weight:600}
+.pnote{margin:0 0 6px;max-width:68ch}
+.area{margin-top:22px}
+.area h3{font-family:var(--display);font-size:1.08rem;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.prop{padding:10px 0;border-bottom:1px solid var(--line)}
+.prop:last-child{border-bottom:0}
+.prop p{margin:0;max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.tag{font-size:.78rem;padding:2px 8px;border-radius:4px;background:var(--soft);color:var(--muted)}
+.tag.of{background:var(--ink);color:var(--bg)}
+.src{font-size:.9rem;margin:8px 0 0;padding:8px 12px;border-radius:8px;background:var(--soft);max-width:70ch}
+.src a{color:inherit}
+.src.none{border:1px dashed var(--line);background:none;color:var(--muted)}
+.via{font-size:.78rem;font-weight:600;padding:2px 8px;border-radius:4px;border:1.5px solid currentColor;background:none}
+.via.baja{color:var(--v-baja)} .via.media{color:var(--v-media)} .via.alta{color:var(--v-alta)}
+.via.muyalta{color:var(--v-muyalta)} .via.inviable{color:var(--v-inviable)}
+details.why{margin-top:6px;font-size:.92rem;color:var(--muted);max-width:70ch}
+details.why summary{cursor:pointer;color:var(--ink);font-size:.86rem;text-decoration:underline;text-underline-offset:3px}
+.who{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem}
+.empty{padding:28px;background:var(--surface);border-radius:12px;color:var(--muted)}
+
+/* Vista tema y viabilidad */
+.rows{background:var(--surface);border-radius:12px;padding:6px 20px}
+.row{display:grid;grid-template-columns:170px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .prop{padding:6px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:.85rem;color:var(--muted);margin:0 0 14px}
+
+/* Calendario */
+.cal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;list-style:none;padding:0;margin:0 0 30px}
+.cal li{background:var(--surface);border-radius:10px;padding:12px 14px}
+.cal li.past{opacity:.5}
+.cal li.next{box-shadow:inset 0 0 0 2px var(--mark)}
+.cal b{font-family:var(--display);display:block}
+.scn{background:var(--surface);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+.scn h3{font-family:var(--display);margin:0 0 6px;font-size:1.08rem}
+.scn p{margin:4px 0;max-width:75ch}
+h2.sec{font-family:var(--display);font-size:1.3rem;margin:26px 0 12px}
+
+footer{margin:40px 0 30px;font-size:.86rem;color:var(--muted)}
+footer a{color:inherit}
+footer p{max-width:80ch}
+
+@media (max-width:760px){
+  .split{grid-template-columns:1fr}
+  .plist{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px}
+  .plist button{white-space:nowrap;border:1px solid var(--line);background:var(--surface)}
+  .plist small{display:none}
+  .row{grid-template-columns:1fr;gap:4px}
+  .sheet{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){.bar button{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Qué propone cada partido para el 29 de noviembre</h1>
+    <p class="lede">Elecciones generales anticipadas de 2026. Elige un partido, compara por tema o filtra por lo difícil que es cumplir cada promesa. <span class="count" id="count"></span></p>
+    <div class="warn"><strong>Léelo antes de fiarte o de compartirlo.</strong>
+      <ul>
+        <li><strong>Todavía no hay programas electorales.</strong> Las elecciones se convocaron el 5 de octubre de 2026 y esta página se cerró ese mismo día.</li>
+        <li><strong>De dónde sale cada propuesta.</strong> Solo las del PP y las del decreto de vivienda del Gobierno se han podido localizar en documentos oficiales (web del partido y BOE). El resto procede de prensa.</li>
+        <li><strong>Partidos pequeños.</strong> Las propuestas de PNV, EH Bildu, BNG, Coalición Canaria, UPN, Compromís y parte de las de Podemos son posiciones anteriores, no compromisos para 2026.</li>
+        <li><strong>La dificultad es una opinión razonada</strong>, no un dato oficial ni asesoramiento jurídico. Esta página no pide el voto para nadie.</li>
+      </ul></div>
+  </header>
+
+  <section class="seats" aria-labelledby="seats-h">
+    <div class="seats-head">
+      <h2 id="seats-h">Reparto de los 350 escaños</h2>
+      <div class="toggle" role="group" aria-label="Datos del reparto">
+        <button id="b23" aria-pressed="true">Resultado de 2023</button>
+        <button id="bpoll" aria-pressed="false">Sondeo de octubre</button>
+      </div>
+    </div>
+    <div class="bar-wrap">
+      <div class="maj" aria-hidden="true"><span>Mayoría absoluta: 176</span></div>
+      <div class="bar" id="bar"></div>
+    </div>
+    <p class="bar-note" id="barnote"></p>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Vistas">
+    <button role="tab" data-tab="partidos" aria-selected="true">Por partido</button>
+    <button role="tab" data-tab="temas" aria-selected="false">Por tema</button>
+    <button role="tab" data-tab="via" aria-selected="false">Por dificultad</button>
+    <button role="tab" data-tab="cal" aria-selected="false">Calendario y escenarios</button>
+  </nav>
+
+  <div class="tools" id="tools">
+    <input class="search" id="q" type="search" placeholder="Buscar una propuesta, por ejemplo: IVA" aria-label="Buscar propuestas">
+    <div class="chips" id="chips"></div>
+  </div>
+  <main id="view"></main>
+
+  <footer>
+    <p><strong>Fuentes.</strong> Convocatoria y decretos: <a href="https://forbes.es/actualidad/1036531/elecciones-generales-2026-sanchez-29-noviembre/">Forbes España</a>. Calendario: <a href="https://www.infobae.com/espana/agencias/2026/10/05/calendario-para-las-elecciones-generales-del-29-de-noviembre/">EFE en Infobae</a>. Sondeo: <a href="https://www.elespanol.com/espana/politica/20261004/sondeo-expres-sanchez-disuelve-congreso-pp-hoy-diputados-psoe-vox-sumar/1003744408026_0.html">SocioMétrica para El Español</a>. Decreto de vivienda: <a href="https://www.boe.es/buscar/pdf/2026/BOE-A-2026-20266-consolidado.pdf">BOE</a> y resumen de <a href="https://www.cuatrecasas.com/es/latam/inmobiliario/art/novedades-sector-inmobiliario">Cuatrecasas</a>. PP: documentos de <a href="https://www.pp.es/sites/default/files/documentos/una_revolucion_fiscal_para_la_generacion_perdida_de_la_vivienda.pdf">pp.es</a>, <a href="https://www.elplural.com/politica/espana/plan-vivienda-feijoo-construir-bajar-impuestos-ni-hablar-regulaciones_800501102">El Plural</a> y <a href="https://eldiario.es/politica/feijoo-pide-elecciones-promete-construir-millon-viviendas-proxima-legislatura_1_13559343.html">elDiario.es</a>. Vox: <a href="https://www.bolsamania.com/noticias_print/empresas/economia--el-pp-rechaza-en-el-congreso-la-propuesta-de-vox-de-exigir-la-prioridad-nacional-en-ayudas-para-vivienda--22776272.html">Europa Press</a> y <a href="https://www.eldebate.com/espana/20261001/construccion-control-fronteras-recetas-vox-ante-crisis-vivienda_464658.html">El Debate</a>. Junts: <a href="https://www.eldiario.es/economia/junts-propone-recortar-decreto-vivienda-favor-caseros-no-regular-alquiler-temporada_1_13556621.html">elDiario.es</a>. Frente Amplio: <a href="https://www.elespanol.com/espana/politica/20261004/frente-amplio-nueva-marca-sumar-presentara-octubre-hoja-ruta/1003744408063_0.html">El Español</a>. Se Acabó La Fiesta: <a href="https://www.democrata.es/politica/alvise-perez-acabo-fiesta-elecciones-generales-deportaciones-referendum-ue/">Demócrata</a> y <a href="https://alertasiete.com/2026/09/27/alvise-perez-propondra-en-su-programa-la-construccion-de-una-carcel-gigante-para-40-000-personas-y-meter-en-ella-a-sanchez/">Alerta Siete</a>. Financiación: <a href="https://www.moncloa.com/2026/09/05/financiacion-singular-cataluna-cpff-3426682/">Moncloa.com</a>.</p>
+    <p>Datos cerrados el 5 de octubre de 2026. Las posiciones marcadas como «posición anterior» proceden de programas de 2023 o de demandas habituales del partido y pueden cambiar cuando se publiquen los programas. Las referencias legales están simplificadas y no son asesoramiento jurídico.</p>
+  </footer>
+</div>
+
+<script>
+const AREAS={vivienda:"Vivienda",impuestos:"Impuestos y cuentas",inmigracion:"Inmigración",trabajo:"Trabajo y pensiones",
+  territorio:"Modelo territorial",justicia:"Justicia e instituciones",exterior:"Defensa y Europa",energia:"Energía y clima"};
+const ORIG={a:"Anunciado en 2026",v:"Votado o aprobado esta legislatura",h:"Posición anterior"};
+const VIA={baja:"Dificultad baja",media:"Dificultad media",alta:"Dificultad alta",muyalta:"Dificultad muy alta",inviable:"Inviable tal como se formula"};
+const P=(area,text,o,via,why,src)=>({area,text,o,via,why,src});
+
+const PARTIES=[
+{id:"pp",name:"PP",full:"Partido Popular",color:"#1d84ce",lead:"Alberto Núñez Feijóo",s23:137,poll:143,pct:"33,4 %",
+ note:"Favorito en los sondeos. Su eje es construir más vivienda y bajar impuestos, sin regular precios.",
+ props:[
+ P("vivienda","Un millón de viviendas en la legislatura (250.000 al año), con el plan aprobado en el primer mes de gobierno.","a","alta","No hay obstáculo legal. El suelo y las licencias dependen de comunidades y ayuntamientos, hoy se terminan en torno a 100.000 viviendas al año (cifra aproximada) y falta mano de obra en la construcción."),
+ P("vivienda","Ley del Suelo y un periodo de excepción de 48 meses para agilizar la construcción, reduciendo de diez a cuatro años los plazos.","a","media","Basta una ley ordinaria, pero el urbanismo es competencia autonómica y el Estado solo puede fijar las bases.","of"),
+ P("vivienda","Bajar el IVA del 10 % al 4 % en la compra de vivienda nueva para jóvenes, y el Impuesto de Transmisiones al 4 % en las comunidades donde gobierna.","a","media","La Directiva europea del IVA admite tipos reducidos en vivienda dentro de una política social, con un mínimo general del 5 %. El 4 % habría que encajarlo. Transmisiones es un impuesto autonómico: solo puede bajarlo cada comunidad.","of"),
+ P("vivienda","Hucha Hogar Joven para menores de 40 años: aportaciones de hasta 2.000 euros al año (máximo 40.000), deducción del 20 % en el IRPF, rendimientos exentos y un aval del Estado por la misma cantidad ahorrada.","a","baja","Ley ordinaria. El único límite es el coste en ingresos y el riesgo que asume el Estado con los avales.","of"),
+ P("vivienda","Deducción del 15 % en el IRPF por alquiler para menores de 40 años, hasta 900 euros al año.","a","baja","Ley ordinaria. PSOE y Junts proponen deducciones parecidas, así que es de lo más fácil de pactar.","of"),
+ P("vivienda","Bonificación del 100 % en el Impuesto de Donaciones cuando la familia ayuda a comprar o alquilar.","a","media","Donaciones está cedido a las comunidades: el Estado puede fijar el marco, pero la bonificación depende de cada una.","of"),
+ P("vivienda","Fondo estatal de garantías que avale la hipoteca hasta el 100 % del precio y la fianza del alquiler.","a","media","Posible por ley. Traslada riesgo al Estado y los supervisores bancarios vigilan las hipotecas al 100 %.","of"),
+ P("vivienda","Bonificaciones de IRPF durante los primeros cuatro años de vida laboral (Plan Prepara).","a","baja","Ley ordinaria. Coste en recaudación."),
+ P("vivienda","Ley contra la okupación para desalojar en 24 horas y plan contra la «inquiokupación».","a","media","La reforma procesal sale por mayoría simple. El plazo de 24 horas tiene que respetar el control judicial de la entrada en domicilio."),
+ P("vivienda","Vincular la financiación de comunidades y ayuntamientos a sus resultados en vivienda y permitir a los ayuntamientos usar sus remanentes.","a","alta","Exige reformar la financiación autonómica por ley orgánica y choca con la autonomía financiera de las comunidades."),
+ P("impuestos","Deflactar el IRPF para compensar la inflación.","a","baja","Basta una ley. Resta ingresos que hay que cuadrar con la senda de gasto pactada con Bruselas."),
+ P("justicia","Que se convoquen elecciones de forma automática si no se aprueban presupuestos tras una prórroga.","a","muyalta","Disolver las Cortes es potestad del presidente y la prórroga presupuestaria es automática según la Constitución. Hacerlo obligatorio apunta a una reforma constitucional, que necesita tres quintos de ambas cámaras."),
+ P("inmigracion","Devolución inmediata de quienes entren de forma irregular, incluidos los menores llegados a Ceuta.","a","muyalta","Derecho de asilo y normas de protección de menores. La Fiscalía de Menores dijo que la propuesta «no tiene sentido». Además Marruecos tiene que aceptar las devoluciones."),
+ P("inmigracion","Refuerzo permanente de las fronteras de Ceuta y Melilla y revisión de las regularizaciones.","a","baja","Son decisiones del Gobierno. El límite es presupuestario."),
+ P("inmigracion","Rechazó en el Congreso la «prioridad nacional» de Vox (18 de junio de 2026) y defiende en su lugar el criterio de arraigo. En Andalucía, Extremadura y Castilla y León ha pactado con Vox exigir años de empadronamiento.","v"),
+ P("trabajo","Votó contra la reducción de la jornada a 37,5 horas por ley.","v"),
+ P("territorio","Rechaza la financiación singular de Cataluña: presentó enmienda a la totalidad.","v"),
+ P("exterior","Critica que el Gobierno se quede en el 2,1 % del PIB en defensa y pide alinearse con la OTAN.","h"),
+ P("energia","Prolongar la vida de las centrales nucleares.","h","media","Es una decisión nacional, pero requiere que las empresas propietarias lo pidan y el aval del Consejo de Seguridad Nuclear.")]},
+
+{id:"psoe",name:"PSOE",full:"Partido Socialista",color:"#e30613",lead:"Pedro Sánchez",s23:121,poll:106,pct:"26,5 %",
+ note:"Convoca tras perder la votación de sus decretos de vivienda. Pide una mayoría más amplia para la agenda social. Sus propuestas de vivienda son las del Real Decreto-ley 26/2026, aprobado por el Gobierno de PSOE y Sumar y derogado al no convalidarse.",
+ props:[
+ P("vivienda","Aprobar un nuevo decreto de vivienda antes de las elecciones a través de la Diputación Permanente.","a","baja","PSOE, Sumar, ERC, Bildu y PNV suman mayoría en la Diputación Permanente. Un gobierno posterior puede derogarlo."),
+ P("vivienda","Suspender hasta 2030 los desahucios de personas vulnerables.","a","alta","Cabe por ley ordinaria, pero PP, Vox y Junts votaron en contra y los sondeos no dan otra mayoría.","of"),
+ P("vivienda","Prórroga extraordinaria de los contratos de alquiler de vivienda habitual y límite a la actualización anual de la renta.","a","alta","Mismo bloqueo parlamentario. El Tribunal Constitucional avaló en 2024 lo esencial de la Ley de Vivienda, así que el problema es de votos.","of"),
+ P("vivienda","Regular el alquiler de temporada y de habitaciones.","a","alta","Junts lo excluye de su texto alternativo. Sin sus votos o una mayoría nueva no sale.","of"),
+ P("vivienda","Prohibir de forma temporal la compra de viviendas a determinados operadores, como fondos de inversión.","a","media","La libre circulación de capitales en la UE obliga a justificar el interés general y la proporcionalidad. Junts propone algo parecido, así que hay base para pactarlo.","of"),
+ P("vivienda","Reforzar el derecho del inquilino a comprar con preferencia la vivienda que alquila.","a","media","Ley ordinaria sin obstáculo europeo. Depende de reunir la mayoría.","of"),
+ P("vivienda","Definir por ley la vivienda asequible (precio no superior al 30 % de la renta mediana del municipio), crear un Fondo de Vivienda de Impacto Social e impulsar la construcción industrializada.","a","media","Es la parte menos polémica del decreto: amplía oferta y podría recuperarse con apoyos más amplios.","of"),
+ P("vivienda","IVA para los alquileres de corta duración y nuevo gravamen a los beneficios no repartidos de las socimis.","a","media","Compatible con las normas europeas. Falta la mayoría para aprobarlo.","of"),
+ P("vivienda","Deducción del 10 % en el IRPF para inquilinos con ingresos inferiores a 33.000 euros y recargo en el IBI a las viviendas vacías.","a","media","Ley ordinaria. Junts propone un 15 % temporal, lo que facilita un acuerdo."),
+ P("inmigracion","Defiende la regularización extraordinaria aprobada en 2026 y niega que provocara un «efecto llamada».","v"),
+ P("trabajo","Reducir la jornada máxima a 37,5 horas semanales.","v","alta","Ley ordinaria. El Congreso la tumbó con 178 votos de PP, Vox, Junts y UPN."),
+ P("territorio","Financiación singular para Cataluña dentro del régimen común, con 4.700 millones más al año.","v","muyalta","Es ley orgánica y necesita 176 votos. Trece comunidades votaron en contra, PP y Vox presentaron enmienda a la totalidad y Junts la considera insuficiente."),
+ P("territorio","Condonación parcial de la deuda autonómica con el Estado.","v","alta","PP y Vox votan en contra; depende de la mayoría que salga de las urnas."),
+ P("exterior","Mantener el gasto en defensa en el 2,1 % del PIB y rechazar el 5 % acordado en la OTAN.","v","media","La OTAN sostiene que España necesitará el 3,5 %. La presión de los aliados crecerá hasta 2035."),
+ P("exterior","Que el catalán sea lengua oficial de la UE.","v","muyalta","Requiere la unanimidad de los 27 Estados miembros."),
+ P("energia","Apuesta por las renovables; el calendario de cierre nuclear escalonado sigue en vigor.","h")]},
+
+{id:"vox",name:"Vox",full:"Vox",color:"#5aa81e",lead:"Santiago Abascal",s23:33,poll:62,pct:"18,1 %",
+ note:"El partido que más crece en los sondeos. Vincula todas sus propuestas, incluida la vivienda, a la inmigración.",
+ props:[
+ P("inmigracion","Cierre total de la frontera y uso de las Fuerzas Armadas para controlarla.","a","alta","El derecho de asilo impide un cierre absoluto: hay que permitir pedir protección. El despliegue militar de apoyo sí es posible."),
+ P("inmigracion","Deportar a todas las personas en situación irregular y a los extranjeros que cometan delitos.","a","alta","Ya es legal. El límite es práctico: hace falta un expediente individual y que el país de origen los admita."),
+ P("inmigracion","«Remigración» de quienes no se integren o vivan de ayudas públicas, aunque tengan residencia legal.","a","inviable","Choca con la Constitución, con el Convenio Europeo de Derechos Humanos, que prohíbe las expulsiones colectivas, y con el estatuto europeo de los residentes de larga duración."),
+ P("vivienda","«Prioridad nacional» para los españoles en vivienda social y ayudas.","a","alta","Discriminar por nacionalidad es contrario al derecho europeo para ciudadanos de la UE y residentes de larga duración. Sí cabe puntuar los años de empadronamiento, con límites: es lo que ya ha pactado con el PP en varias comunidades (diez años para comprar vivienda protegida y cinco para alquiler social). En el Congreso el PP votó en contra."),
+ P("inmigracion","Reservar a los españoles las pensiones y prestaciones no contributivas y retirar la asistencia jurídica gratuita en los procesos de expulsión.","v","inviable","Excluir por nacionalidad a residentes legales de las prestaciones choca con la igualdad de trato que impone el derecho europeo. La asistencia letrada en una expulsión forma parte de la tutela judicial."),
+ P("vivienda","Desregular los alquileres y eliminar los topes de precios.","a","baja","Ley ordinaria. Sale si PP y Vox suman mayoría."),
+ P("vivienda","Simplificar la normativa urbanística y construir más vivienda libre y social.","a","media","Depende de comunidades y ayuntamientos, que tienen la competencia."),
+ P("vivienda","Eliminar o reducir los impuestos a la compra de primera vivienda y subirlos a los compradores extranjeros no comunitarios.","a","alta","La rebaja es posible, aunque parte de esos impuestos son autonómicos. El recargo a extranjeros choca con la libre circulación de capitales, que también protege a terceros países."),
+ P("impuestos","Rebaja fuerte de IRPF, Impuesto de Sociedades y cuota de autónomos.","h","muyalta","Con deuda en torno al 100 % del PIB, las reglas fiscales europeas obligan a compensar cada rebaja con menos gasto."),
+ P("impuestos","Eliminar tres normas por cada regulación nueva.","h","media","Es un compromiso político sin obstáculo legal, pero muchas normas vienen de la UE o de las comunidades."),
+ P("trabajo","Pasar a un sistema de pensiones mixto, con una parte de capitalización.","h","muyalta","El coste de transición es muy alto: hay que seguir pagando las pensiones actuales mientras parte de las cotizaciones se desvía a ahorro individual."),
+ P("trabajo","Votó contra la reducción de la jornada a 37,5 horas.","v"),
+ P("territorio","Rechaza la financiación singular, que llama «cupo catalán».","v"),
+ P("energia","Eliminar las normas contra las emisiones de CO2 y volver al motor de combustión.","h","inviable","Son reglamentos europeos. España no puede derogarlos por su cuenta."),
+ P("energia","Recuperar un plan nuclear nacional.","h","media","Decisión nacional. Prolongar centrales depende de sus propietarias y del Consejo de Seguridad Nuclear; construir nuevas llevaría más de una década.")]},
+
+{id:"fa",name:"Frente Amplio",full:"Frente Amplio (Movimiento Sumar, IU, Más Madrid y Comuns)",color:"#d4267d",lead:"Por decidir el 17 de octubre",s23:31,poll:6,pct:"5,3 %",
+ note:"Nueva marca de los partidos de Sumar. Yolanda Díaz no repite. Suenan Mónica García, Pablo Bustinduy, Ada Colau y Ernest Urtasun. Presentará su hoja de ruta el 17 de octubre. En 2023 obtuvo 31 escaños con Podemos dentro.",
+ props:[
+ P("vivienda","La vivienda como condición de legislatura: «No hay legislatura sin vivienda». Intervenir el mercado del alquiler y frenar el rentismo.","a","alta","Las medidas concretas están por presentar. Las que apoyó en el decreto necesitan una mayoría que hoy no existe."),
+ P("trabajo","Jornada de 37,5 horas con registro horario obligatorio y sanciones.","v","alta","Ley ordinaria. La tumbaron PP, Vox y Junts."),
+ P("trabajo","Seguir reduciendo la jornada hasta las 32 horas mediante diálogo social.","h","muyalta","Si no hay mayoría para 37,5 horas, menos aún para 32."),
+ P("trabajo","Subir el salario mínimo por encima del IPC cada año.","h","baja","Lo fija el Gobierno por decreto tras consultar a sindicatos y patronal. Solo necesita estar en el Gobierno."),
+ P("trabajo","Mantener la revalorización de las pensiones con el IPC.","h","baja","Ya está en la ley. Mantenerlo no requiere cambios, aunque la sostenibilidad se revisa periódicamente."),
+ P("inmigracion","Defensa de la regularización extraordinaria de 2026.","v"),
+ P("territorio","Sumar respalda la reforma de la financiación autonómica pactada con ERC.","v")]},
+
+{id:"podemos",name:"Podemos",full:"Podemos",color:"#6b2c91",lead:"Irene Montero",s23:null,poll:2,pct:"en torno al 3 %",
+ note:"En 2023 fue dentro de Sumar y luego se separó. Condiciona una lista conjunta con el Frente Amplio a unas primarias abiertas y a una línea más crítica con el PSOE.",
+ props:[
+ P("justicia","Primarias abiertas para elegir al cabeza de lista de una candidatura unitaria de la izquierda.","a","media","No depende de leyes sino de que el Frente Amplio lo acepte antes del 16 de octubre, fecha límite para comunicar coaliciones."),
+ P("vivienda","Bajar por ley el precio de los alquileres y prohibir la compra de vivienda que no sea para vivir en ella.","h","muyalta","Tocaría el contenido esencial del derecho de propiedad que protege la Constitución y la libre circulación de capitales en la UE. Tampoco hay mayoría parlamentaria."),
+ P("exterior","Rechazo al aumento del gasto militar y a los objetivos de la OTAN.","v","media","Congelar el gasto es una decisión presupuestaria, pero choca con los compromisos firmados con los aliados."),
+ P("territorio","Rechaza la reforma de financiación pactada entre PSOE y ERC.","v")]},
+
+{id:"erc",name:"ERC",full:"Esquerra Republicana de Catalunya",color:"#e0a000",lead:"Gabriel Rufián (previsible)",s23:7,poll:8,
+ note:"Socio del Gobierno en esta legislatura. Rechazó sumarse a una lista conjunta con Sumar y Podemos.",
+ props:[
+ P("territorio","Financiación singular para Cataluña con principio de ordinalidad y 4.700 millones adicionales.","v","muyalta","Ley orgánica. Sin PP, Vox ni Junts no alcanza los 176 votos."),
+ P("vivienda","Apoyó los dos decretos de vivienda y defiende regular el alquiler.","v","alta","Mismo bloqueo que el resto del paquete."),
+ P("justicia","No volver a pactar con Junts.","a"),
+ P("territorio","Referéndum de autodeterminación para Cataluña.","h","inviable","El Tribunal Constitucional lo ha declarado contrario a la Constitución. Exigiría la reforma agravada: dos tercios de ambas cámaras, disolución y referéndum.")]},
+
+{id:"junts",name:"Junts",full:"Junts per Catalunya",color:"#17a99c",lead:"Sin confirmar (portavoz: Míriam Nogueras)",s23:7,poll:5,
+ note:"Sus siete votos tumbaron los decretos de vivienda. Ha roto con el PSOE y presentó un decreto alternativo de 59 páginas.",
+ props:[
+ P("territorio","Concierto económico propio para Cataluña, fuera del régimen común.","v","muyalta","El régimen foral vasco y navarro se apoya en una disposición de la Constitución que no cubre a Cataluña. PSC, PP y Vox lo rechazan."),
+ P("vivienda","Prórroga pactada de los contratos de alquiler por plazos anuales, hasta un máximo de dos años.","a","media","Ley ordinaria. Es más limitada que la del Gobierno; podría pactarse con el PSOE o con el PP."),
+ P("vivienda","Deducción del 15 % en el IRPF para inquilinos con menos de 33.000 euros, en 2026 y 2027.","a","media","Parecida a la del Gobierno. Coste compartido entre Estado y comunidades."),
+ P("vivienda","IVA del 5 % para vivienda nueva habitual de hasta 120 metros cuadrados.","a","media","El 5 % es el mínimo que admite la Directiva del IVA. El freno es el coste en recaudación."),
+ P("vivienda","Restringir hasta 2028 la compra de pisos por fondos.","a","media","Coincide con el PSOE. Debe respetar la libre circulación de capitales."),
+ P("vivienda","Incentivos fiscales por ceder viviendas vacías a administraciones para alquiler social.","a","baja","Ley ordinaria con poco coste."),
+ P("impuestos","Deflactar el IRPF y bonificar al 99 % sucesiones y donaciones (propuesto en el Parlament).","v","media","Sucesiones es un impuesto cedido: depende de cada comunidad."),
+ P("trabajo","Votó contra la jornada de 37,5 horas.","v"),
+ P("exterior","Catalán oficial en la Unión Europea.","h","muyalta","Unanimidad de los 27."),
+ P("territorio","Referéndum de autodeterminación.","h","inviable","Contrario a la Constitución según el Tribunal Constitucional.")]},
+
+{id:"bildu",name:"EH Bildu",full:"Euskal Herria Bildu",color:"#8fb000",lead:"Sin confirmar",s23:6,poll:null,
+ note:"Socio parlamentario del Gobierno. Aún no ha presentado propuestas específicas para el 29N.",
+ props:[
+ P("vivienda","Apoyó los dos decretos de vivienda y defiende regular el alquiler.","v","alta","Depende de una mayoría que hoy no existe."),
+ P("justicia","Derogar la ley de seguridad ciudadana, conocida como «ley mordaza».","h","alta","Es ley orgánica y la reforma lleva encallada toda la legislatura."),
+ P("territorio","Derecho a decidir para Euskadi y Navarra.","h","inviable","Exigiría la reforma agravada de la Constitución.")]},
+
+{id:"pnv",name:"PNV",full:"Partido Nacionalista Vasco",color:"#2a8343",lead:"Sin confirmar",s23:5,poll:null,
+ note:"Apoya el primer decreto de vivienda y se opone al segundo. Defiende que la solución «está en el centro».",
+ props:[
+ P("territorio","Defensa del Concierto Económico y traspaso de las competencias pendientes del Estatuto de Gernika.","h","media","Se negocia de forma bilateral con el Gobierno de turno. Su fuerza depende de que sus votos sean necesarios."),
+ P("vivienda","Respaldo a las medidas sociales del primer decreto y rechazo al segundo.","v"),
+ P("territorio","Nuevo estatus político con reconocimiento nacional de Euskadi.","h","muyalta","Requiere mayoría en el Parlamento Vasco y ley orgánica en las Cortes.")]},
+
+{id:"bng",name:"BNG",full:"Bloque Nacionalista Galego",color:"#5fa3d6",lead:"Sin confirmar",s23:1,poll:null,
+ note:"Un escaño en 2023. Aún sin propuestas específicas para el 29N.",
+ props:[
+ P("territorio","Financiación justa para Galicia y condonación de deuda.","h","alta","Depende de la reforma del sistema de financiación, que no tiene mayoría."),
+ P("territorio","Traspaso a Galicia de la autopista AP-9.","h","media","Ley orgánica de transferencia. Avanza o se frena según la necesidad de sus votos.")]},
+
+{id:"cc",name:"Coalición Canaria",full:"Coalición Canaria",color:"#d9a800",lead:"Sin confirmar",s23:1,poll:null,
+ note:"Gobierna Canarias. Fue el único gobierno autonómico que apoyó a Cataluña en la votación del nuevo modelo de financiación.",
+ props:[
+ P("territorio","Cumplimiento de la «agenda canaria»: Régimen Económico y Fiscal y mejora de la financiación de las islas.","h","media","Se negocia con cada Gobierno; el REF tiene anclaje en el Estatuto y en el derecho europeo."),
+ P("territorio","Apoyo al nuevo modelo de financiación autonómica.","v")]},
+
+{id:"upn",name:"UPN",full:"Unión del Pueblo Navarro",color:"#0b3d91",lead:"Sin confirmar",s23:1,poll:1,
+ note:"Un escaño por Navarra. Vota habitualmente con el PP.",
+ props:[
+ P("territorio","Defensa del régimen foral de Navarra como comunidad diferenciada.","h","baja","Es el marco vigente; no requiere cambios."),
+ P("trabajo","Votó contra la jornada de 37,5 horas.","v")]},
+
+{id:"compromis",name:"Compromís",full:"Compromís",color:"#e65f00",lead:"Sin confirmar",s23:null,poll:null,
+ note:"En 2023 fue dentro de Sumar. No está confirmado si irá con el Frente Amplio o por separado.",
+ props:[
+ P("territorio","Reforma de la financiación autonómica para corregir la infrafinanciación valenciana y condonar deuda.","h","alta","Depende de una reforma general del sistema que no tiene mayoría.")]},
+
+{id:"salf",name:"Se Acabó La Fiesta",full:"Se Acabó La Fiesta (SALF)",color:"#7a5230",lead:"Alvise Pérez",s23:0,poll:0,pct:"2,2 %",
+ note:"El partido del eurodiputado Alvise Pérez se presenta por primera vez a unas generales. El sondeo de SocioMétrica no le da escaño. No tiene un programa cerrado: sus propuestas proceden de sus actos y redes.",
+ props:[
+ P("inmigracion","«El mayor plan de deportación masiva de inmigrantes ilegales» y deportación inmediata de quien entre de forma irregular.","a","alta","Expulsar a personas en situación irregular ya es legal, pero exige expediente individual y que el país de origen las admita. Las expulsiones colectivas están prohibidas."),
+ P("justicia","Construir a las afueras de Madrid una macrocárcel para 40.000 personas, «sin piscina ni gimnasio».","a","alta","Construir una prisión es posible; el freno es el coste y que el régimen penitenciario debe respetar la ley y los estándares europeos."),
+ P("justicia","Reinstaurar los trabajos forzados para los presos.","a","inviable","La Constitución los prohíbe de forma expresa. Cambiarlo exigiría la reforma agravada."),
+ P("justicia","Enviar a prisión a los jueces que cometan «errores graves» que beneficien a un criminal.","a","muyalta","El delito de prevaricación judicial ya existe. Castigar el simple error choca con la independencia judicial que garantiza la Constitución."),
+ P("justicia","Impedir el tercer grado a los condenados por corrupción que no devuelvan el dinero y extender las penas a familiares o amigos que se beneficien.","a","media","Lo primero cabe por ley orgánica. Castigar a terceros solo es posible si participan en el delito: la responsabilidad penal es personal."),
+ P("impuestos","Exención total del IRPF para quien gane menos de 35.000 euros al año y rebaja de cinco puntos por cada hijo.","a","muyalta","Dejaría fuera del impuesto a la mayoría de contribuyentes. El coste en recaudación es incompatible con las reglas fiscales europeas sin un recorte enorme del gasto."),
+ P("impuestos","Recorte de subvenciones, desregulación y defensa del uso del dinero en efectivo.","a","media","Recortar subvenciones es decisión presupuestaria. Los límites a los pagos en efectivo se pueden cambiar por ley."),
+ P("exterior","Referéndum sobre la salida de España de la UE si no se renegocia la relación con Bruselas.","h","muyalta","Un referéndum consultivo necesita la autorización del Congreso, donde ningún otro partido lo apoya.")]}
+];
+
+const OFF={
+ pp:[["Plan fiscal de vivienda para menores de 40 años (pp.es, PDF)","https://www.pp.es/sites/default/files/documentos/una_revolucion_fiscal_para_la_generacion_perdida_de_la_vivienda.pdf"],
+     ["Hucha Hogar Joven y Plan Nacional de Vivienda (pp.es, PDF)","https://www.pp.es/storage/2025/02/25.02.7-Titulares-ANF-Hucha-Hogar-Joven.pdf"]],
+ psoe:[["Real Decreto-ley 26/2026 de vivienda (BOE)","https://www.boe.es/buscar/pdf/2026/BOE-A-2026-20266-consolidado.pdf"]]};
+const POLL_OTHERS=17;
+const CAL=[["2026-10-06","6 de octubre","Decreto de convocatoria en el BOE. Se abre la solicitud de voto por correo."],
+["2026-10-16","16 de octubre","Último día para comunicar coaliciones."],
+["2026-10-17","17 de octubre","El Frente Amplio presenta candidato y hoja de ruta."],
+["2026-10-26","21 al 26 de octubre","Presentación de candidaturas."],
+["2026-11-03","3 de noviembre","Candidaturas proclamadas en el BOE."],
+["2026-11-13","13 de noviembre","Empieza la campaña electoral."],
+["2026-11-19","19 de noviembre","Último día para solicitar el voto por correo."],
+["2026-11-23","23 de noviembre","Último día para publicar encuestas."],
+["2026-11-25","25 de noviembre","Último día para votar por correo."],
+["2026-11-27","27 de noviembre","Fin de la campaña."],
+["2026-11-29","29 de noviembre","Jornada electoral."]];
+const SCN=[
+["PP y Vox suman mayoría absoluta","Es lo que apuntan los sondeos, que les dan entre 205 y 212 escaños.","Saldrían adelante las rebajas fiscales, la Ley del Suelo, el fin de los topes al alquiler, los desalojos rápidos y la prórroga nuclear.","Quedarían fuera los decretos de vivienda del Gobierno, la jornada de 37,5 horas y la financiación singular. La remigración amplia y las normas de CO2 chocarían con Europa aunque hubiera mayoría."],
+["PP gana pero no suma con Vox","Necesitaría a Junts, PNV o Coalición Canaria, difíciles de combinar con Vox.","Solo lo común: IVA reducido en vivienda nueva, deflactación del IRPF, incentivos a propietarios.","La agenda migratoria de Vox. Habría riesgo de bloqueo o de repetición electoral."],
+["El bloque de la investidura de 2023 vuelve a sumar","Hoy tendría 143 escaños. Haría falta una remontada del PSOE y recomponer la relación con Junts.","La regulación del alquiler, solo si Junts cede o deja de ser necesario.","El concierto catalán, y la jornada de 37,5 horas si Junts sigue siendo decisivo."],
+["Acuerdo entre PP y PSOE","No hay precedente de coalición y ninguno de los dos lo plantea.","Pactos de Estado sobre financiación, pensiones o vivienda.","Las agendas de Vox y de los socios nacionalistas."]];
+
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+let state={tab:"partidos",party:"pp",area:"vivienda",via:"todas",q:"",mode:"s23"};
+const byId=id=>PARTIES.find(p=>p.id===id);
+
+// Cuenta atrás
+(function(){const d=Math.ceil((new Date("2026-11-29T00:00:00")-new Date())/864e5);
+  $("#count").textContent=d>1?`Faltan ${d} días`:d===1?"Es mañana":d===0?"Es hoy":"Ya se han celebrado";})();
+
+function renderBar(){
+  const bar=$("#bar");bar.innerHTML="";
+  const key=state.mode;
+  const list=PARTIES.filter(p=>(p[key]||0)>0);
+  list.forEach(p=>{
+    const b=document.createElement("button");
+    b.style.flexGrow=p[key];b.style.flexBasis="0";b.style.background=p.color;
+    b.title=`${p.name}: ${p[key]} escaños`;b.setAttribute("aria-label",b.title+". Ver propuestas");
+    if(state.tab==="partidos"&&state.party!==p.id)b.className="dim";
+    b.onclick=()=>{state.party=p.id;state.tab="partidos";render();$("#view").scrollIntoView({behavior:"smooth",block:"start"});};
+    bar.appendChild(b);
+  });
+  if(key==="poll"){const o=document.createElement("button");o.style.flexGrow=POLL_OTHERS;o.style.flexBasis="0";
+    o.style.background="var(--line)";o.disabled=true;o.title=`Resto de partidos: ${POLL_OTHERS} escaños sin desglose`;bar.appendChild(o);}
+  $("#barnote").textContent=key==="s23"
+    ?"Elecciones del 23 de julio de 2023. Sumar obtuvo 31 escaños con Podemos y Compromís dentro. Pulsa un color para ver ese partido."
+    :"SocioMétrica para El Español, 1 a 3 de octubre de 2026. PP y Vox sumarían 205. El tramo gris son 17 escaños que el sondeo publicado no desglosa. Es una foto anterior a la convocatoria, no un pronóstico.";
+  $("#b23").setAttribute("aria-pressed",key==="s23");$("#bpoll").setAttribute("aria-pressed",key==="poll");
+}
+
+function propHTML(pr,showWho){
+  const p=showWho?pr._p:null;
+  return `<div class="prop">${p?`<span class="who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`:""}
+    <p>${esc(pr.text)}</p>
+    <div class="meta"><span class="tag">${ORIG[pr.o]}</span><span class="tag ${pr.src==="of"?"of":""}">${pr.src==="of"?"Fuente: documento oficial":"Fuente: prensa"}</span>${pr.via?`<span class="via ${pr.via}">${VIA[pr.via]}</span>`:""}</div>
+    ${pr.why?`<details class="why"><summary>Por qué esa dificultad</summary><p>${esc(pr.why)}</p></details>`:""}</div>`;
+}
+const match=pr=>!state.q||norm(pr.text+" "+(pr.why||"")).includes(norm(state.q));
+
+function chips(items,cur,on){
+  const c=$("#chips");c.innerHTML="";
+  items.forEach(([k,l])=>{const b=document.createElement("button");b.className="chip";b.textContent=l;
+    b.setAttribute("aria-pressed",k===cur);b.onclick=()=>on(k);c.appendChild(b);});
+}
+
+function offHTML(p){const o=OFF[p.id];
+  return o?`<p class="src">Documentos oficiales consultados: ${o.map(([l,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(l)}</a>`).join(" y ")}. Las propuestas tomadas de ellos llevan la etiqueta «documento oficial».</p>`
+   :`<p class="src none">No se ha localizado un documento oficial de ${esc(p.name)} con estas propuestas. Proceden de prensa y conviene contrastarlas en la web del partido.</p>`;}
+function viewPartidos(){
+  $("#tools").style.display="flex";chips([],null,()=>{});
+  const p=byId(state.party);
+  const list=PARTIES.map(x=>`<button data-p="${x.id}" style="--pc:${x.color}" aria-current="${x.id===p.id}">
+    <span class="dot"></span>${esc(x.name)}<small>${x.s23??"–"}</small></button>`).join("");
+  let body="";
+  Object.keys(AREAS).forEach(a=>{
+    const ps=p.props.filter(x=>x.area===a&&match(x));
+    if(ps.length)body+=`<section class="area"><h3>${AREAS[a]}</h3>${ps.map(x=>propHTML(x)).join("")}</section>`;
+  });
+  if(!body)body=`<p class="empty">Ninguna propuesta de ${esc(p.name)} coincide con «${esc(state.q)}». Borra la búsqueda para verlas todas.</p>`;
+  const poll=p.poll==null?"sin dato publicado":p.poll+" escaños"+(p.pct?` (${p.pct})`:"");
+  const s23=p.s23==null?"dentro de Sumar":p.s23===0?"no se presentó":p.s23+" escaños";
+  $("#view").innerHTML=`<div class="split"><div class="plist" aria-label="Partidos">${list}</div>
+    <article class="sheet" style="--pc:${p.color}"><h2>${esc(p.full)}</h2>
+    <div class="facts"><span>Cabeza de cartel: <b>${esc(p.lead)}</b></span><span>En 2023: <b>${s23}</b></span><span>Sondeo: <b>${poll}</b></span></div>
+    <p class="pnote">${esc(p.note)}</p>${offHTML(p)}${body}</article></div>`;
+  document.querySelectorAll(".plist button").forEach(b=>b.onclick=()=>{state.party=b.dataset.p;render();});
+}
+
+function viewTemas(){
+  $("#tools").style.display="flex";
+  chips(Object.entries(AREAS),state.area,k=>{state.area=k;render();});
+  let rows="";
+  PARTIES.forEach(p=>{
+    const ps=p.props.filter(x=>x.area===state.area&&match(x));
+    if(ps.length)rows+=`<div class="row"><div><span class="who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span></div>
+      <div>${ps.map(x=>propHTML(x)).join("")}</div></div>`;
+  });
+  $("#view").innerHTML=rows?`<div class="rows">${rows}</div>`
+    :`<p class="empty">No hay propuestas de ${AREAS[state.area].toLowerCase()} que coincidan con la búsqueda.</p>`;
+}
+
+function viewVia(){
+  $("#tools").style.display="flex";
+  chips([["todas","Todas"],["baja","Baja"],["media","Media"],["alta","Alta"],["muyalta","Muy alta"],["inviable","Inviable"]],state.via,k=>{state.via=k;render();});
+  const order=["baja","media","alta","muyalta","inviable"];
+  let all=[];PARTIES.forEach(p=>p.props.forEach(x=>{if(x.via)all.push({...x,_p:p});}));
+  all=all.filter(x=>(state.via==="todas"||x.via===state.via)&&match(x)).sort((a,b)=>order.indexOf(a.via)-order.indexOf(b.via));
+  const html=all.map(x=>propHTML(x,true)).join("");
+  $("#view").innerHTML=`<p class="legend">Las ${all.length} propuestas con valoración, de la más fácil a la más difícil de cumplir. La dificultad combina obstáculos legales, europeos, presupuestarios y de votos.</p>`+
+    (html?`<div class="rows">${html}</div>`:`<p class="empty">Ninguna propuesta coincide con ese filtro.</p>`);
+}
+
+function viewCal(){
+  $("#tools").style.display="none";
+  const today=new Date().toISOString().slice(0,10);let nextDone=false;
+  const cal=CAL.map(([d,l,t])=>{let c="";if(d<today)c="past";else if(!nextDone){c="next";nextDone=true;}
+    return `<li class="${c}"><b>${l}</b>${t}</li>`;}).join("");
+  const scn=SCN.map(([t,a,b,c])=>`<div class="scn"><h3>${t}</h3><p>${a}</p><p><strong>Qué saldría adelante:</strong> ${b}</p><p><strong>Qué quedaría fuera:</strong> ${c}</p></div>`).join("");
+  $("#view").innerHTML=`<h2 class="sec">Fechas clave</h2><ul class="cal">${cal}</ul>
+    <h2 class="sec">Qué pasaría según quién sume 176 escaños</h2>${scn}`;
+}
+
+function render(){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===state.tab));
+  renderBar();
+  ({partidos:viewPartidos,temas:viewTemas,via:viewVia,cal:viewCal})[state.tab]();
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;render();});
+$("#q").addEventListener("input",e=>{state.q=e.target.value.trim();
+  ({partidos:viewPartidos,temas:viewTemas,via:viewVia,cal:viewCal})[state.tab]();});
+$("#b23").onclick=()=>{state.mode="s23";renderBar();};
+$("#bpoll").onclick=()=>{state.mode="poll";renderBar();};
+render();
+</script>
+</body>
+</html>
